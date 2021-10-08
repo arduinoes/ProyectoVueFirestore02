@@ -1,7 +1,6 @@
-# firebase9
+# Atención acuérdate de intalar los Módulos
 
-## Atención acuérdate de intalar los Módulos
-
+## Instala los modulos, vete a terminal, nuevo terminal y escribe
 Instala los modulos, vete a terminal, nuevo terminal y escribe
 ```
 npm install
