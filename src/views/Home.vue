@@ -1,7 +1,8 @@
 <template>
-  <div class="container">
+  <div>
     <Navbar/>
 <!-- ////////// tabla ////////// -->
+  <div class="container">
   <table class="table">
     <thead>
       <tr>
@@ -45,6 +46,7 @@
     </button>
     </div>
   </form>
+  </div>
   </div>
 </template>
 

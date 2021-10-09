@@ -8,10 +8,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <router-link class="nav-link active" aria-current="page" to="/">Home</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Consola</a>
+            <router-link v-if="existeUsuario" class="nav-link active" aria-current="page" to="/about">Consola</router-link>
           </li>
         </ul>
         <form class="d-flex">
@@ -19,66 +19,38 @@
           <button class="btn btn-outline-success me-2" type="submit">Buscar</button>
         </form>
           <button type="button" class="btn btn-outline-primary me-2" 
+                v-if="!existeUsuario"
                 data-bs-toggle="modal" 
                 data-bs-target="#login">
                 Iniciar sesión
           </button>  
-          <button class="btn btn-outline-danger me-2" 
+          <button class="btn btn-outline-danger me-2"
+            v-if="existeUsuario" 
             data-bs-toggle="modal" 
             data-bs-target="#login"
             @click="signout">Cerrar sesión</button>
           <button type="button" 
-                  class="btn btn-outline-primary" 
+                  v-if="!existeUsuario"
+                  class="btn btn-outline-warning" 
                   data-bs-toggle="modal" 
-                  data-bs-target="#registro">
+                  data-bs-target="#registro"><!-- inicia modal con id="registro" --> 
                   Regístrate
           </button> 
         </div>
     </div>
   </nav>
 
-<!-- Modal Iniciar sesión -->
-<div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- //// Modal - Iniciar sesión //// -->
+<div class="modal fade" id="login">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Inicia de sesión</h5>
+        <h5 class="modal-title">Inicia de sesión</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form @submit.prevent="login( this.email, this.password )">  
-            <div class="input-group mb-3">
-            <span class="input-group-text">Correo</span>
-            <input v-model="email" 
-                    type="email"
-                    required="true"
-                    class="form-control">
-            </div>
-            <!-- Familia -->
-            <div class="input-group mb-3">
-            <span class="input-group-text">Password</span>
-            <input v-model="password" 
-                    type="password"
-                    required="true" 
-                    class="form-control">
-            </div>
-                <button type="submit" class="btn btn-primary">Registrar
-            </button>
-          </form>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- ///////////// registro //////////////-->
-<div class="modal fade" id="registro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Regístrate</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form @submit.prevent="register( this.email, this.password )">  
+        <form @submit.prevent="login( this.email, this.password )">
+          <!-- CORREO --> 
           <div class="input-group mb-3">
           <span class="input-group-text">Correo</span>
           <input v-model="email" 
@@ -86,7 +58,7 @@
                   required="true"
                   class="form-control">
           </div>
-          <!-- Familia -->
+          <!-- PASSWORD --> 
           <div class="input-group mb-3">
           <span class="input-group-text">Password</span>
           <input v-model="password" 
@@ -94,7 +66,45 @@
                   required="true" 
                   class="form-control">
           </div>
-          <!-- Descripción -->
+          <div class="d-grid gap-2">
+            <button type="submit" 
+              class="btn btn-primary" 
+              data-bs-dismiss="modal"><!-- Cierra el modal --> 
+              Iniciar sesión
+            </button>
+          </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- //// Modal - Registrarse //// -->
+<div class="modal fade" id="registro">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Regístrate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form @submit.prevent="register( this.email, this.password )">  
+           <!-- CORREO -->
+          <div class="input-group mb-3">
+          <span class="input-group-text">Correo</span>
+          <input v-model="email" 
+                  type="email"
+                  required="true"
+                  class="form-control">
+          </div>
+          <!-- PASSWORD -->
+          <div class="input-group mb-3">
+          <span class="input-group-text">Password</span>
+          <input v-model="password" 
+                  type="password"
+                  required="true" 
+                  class="form-control">
+          </div>
+          <!-- REPASSWORD -->
           <div class="input-group mb-3">
           <span class="input-group-text">Repite Password</span>
           <input v-model="repassword" 
@@ -102,8 +112,9 @@
                   required="true" 
                   class="form-control">
           </div>
-          <button type="submit" :disabled="!desactivar" class="btn btn-primary">Registrar
-          </button>
+          <div class="d-grid gap-2">
+            <button type="submit" :disabled="!desactivar" class="btn btn-primary" data-bs-dismiss="modal">Registrar</button>
+          </div>
         </form>
       </div>
     </div>
@@ -119,7 +130,7 @@ import {
   } from "firebase/auth";
 
 import { auth } from "../main";
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'Navbar',
    data() {
@@ -134,10 +145,9 @@ export default {
      register(email, password) {
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in
                 const user = userCredential.user;
                 alert('¡Registrado!');
-                // ...
+                router.go('/about')
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -164,17 +174,15 @@ export default {
      signout () {
       signOut(auth).then(() => {
         alert('¡Sesión cerrada! Inicia sesión.');
-        //this.$router.push('/login');
-        // Sign-out successful.
       }).catch((error) => {
-        // An error happened.
       });
      }
    },
-    computed: {
+  computed: {
     desactivar(){
         return this.password === this.repassword
-    }
-    }
+    },
+    ...mapGetters(['existeUsuario'])
+  }
 }
 </script>
